@@ -1,2 +1,2 @@
 # Capstone-AI-Model
-Capstone project for AI and IoT for crop health
+Capstone project for AI and IoT for crop health monitoring
