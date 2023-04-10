@@ -4,39 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crop Disease Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #4CAF50;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        canvas, img {
+            border-radius: 10px;
+            margin: 10px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input[type="file"], button {
+            cursor: pointer;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        input[type="file"]:hover, button:hover {
+            background-color: #45a049;
+        }
+
+        footer {
+            background-color: #4CAF50;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            font-size: 0.8em;
+        }
+    </style>
 </head>
 <body>
-    <h1>Crop Disease Prediction</h1>
-    <form id="upload-form">
-        <input type="file" id="image" name="image" accept="image/*">
-        <button type="submit">Predict</button>
-    </form>
-    <canvas id="uploaded-image" width="256" height="256"></canvas>
-    <div id="similar-images"></div>
+    <header>
+        <h1>Crop Disease Prediction</h1>
+        <p>Upload an image of a crop leaf and our AI will predict the disease affecting it.</p>
+    </header>
+    <div class="container">
+        <form id="upload-form">
+            <input type="file" id="image" name="image" accept="image/*">
+            <button type="submit">Predict</button>
+        </form>
+        <canvas id="uploaded-image" width="256" height="256"></canvas>
+        <div id="similar-images"></div>
 
-    <div id="result"></div>
-    <div id="result_percentage"></div>
+        <div id="result"></div>
+        <div id="result_percentage"></div>
+    </div>
+    <footer>
+        &copy; 2023 Crop Disease Prediction | All Rights Reserved
+    </footer>
 
     <script>
         const form = document.getElementById('upload-form');
+        const imageInput = document.getElementById('image');
         const result = document.getElementById('result');
         const result_percentage = document.getElementById('result_percentage');
         const uploadedImageCanvas = document.getElementById('uploaded-image');
         const similarImagesDiv = document.getElementById('similar-images');
     
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const image = document.getElementById('image').files[0];
-            const formData = new FormData();
-            formData.append('image', image);
-    
-            // Display the uploaded image
+        imageInput.addEventListener('change', (e) => {
+            const image = e.target.files[0];
             const ctx = uploadedImageCanvas.getContext('2d');
             const img = new Image();
             img.src = URL.createObjectURL(image);
             img.onload = () => {
                 ctx.drawImage(img, 0, 0, 256, 256);
             };
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const image = imageInput.files[0];
+            const formData = new FormData();
+            formData.append('image', image);
     
             const response = await fetch('/predict', {
                 method: 'POST',
@@ -49,7 +122,7 @@
         });
     
         function displayResult(predictedClass, confidence) {
-            result.innerHTML = `<h2>Predicted Disease:</h2><p>${predictedClass}</p>`;
+            result.innerHTML = `<h2>Predicted:</h2><p>${predictedClass}</p>`;
             result_percentage.innerHTML = `<h3>Confidence Percentage:</h3><p>${confidence}%</p>`;
         }
     
@@ -63,7 +136,6 @@
                 similarImagesDiv.appendChild(img);
             });
         }
-    </script>    
-            
-    </body>
-</html>        
+    </script>
+</body>
+</html>

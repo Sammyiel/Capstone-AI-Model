@@ -49,10 +49,10 @@ def predict():
     similar_images = get_similar_images(class_name)
     
     # Get the confidence percentage
-#     probabilities = softmax(predictions[0])
-#     confidence_percentage = probabilities[predicted_class] * 100
+    probabilities = softmax(predictions[0])
+    confidence = probabilities[predicted_class] * 100
 
-    return jsonify({"class": class_name, "confidence": 100, "similar_images": similar_images})
+    return jsonify({"class": class_name, "confidence": confidence, "similar_images": similar_images})
 
 
 @app.route('/images/<path:filename>', methods=['GET'])
